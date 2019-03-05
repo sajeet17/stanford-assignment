@@ -61,7 +61,7 @@ class KNearestNeighbor(object):
       point.
     """
     num_test = X.shape[0]
-    num_train = self.X_train.shape[0]
+    num_train = self.X_train.sshape[0]
     dists = np.zeros((num_test, num_train))
     for i in range(num_test):
         for j in range(num_train):
