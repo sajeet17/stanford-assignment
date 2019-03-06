@@ -147,8 +147,27 @@ class KNearestNeighbor(object):
     def compute_distances_no_loops(self, X):
         num_test = X.shape[0]
         num_train = self.X_train.shape[0]
+        train_square = np.sum(self.X_train**2, axis=1)
+        test_square = np.sum(X**2, axis=1)
+        #make the shape compatible
+        train_square_modified = np.array([train_square]*num_test)
+        test_square_modified = np.array([test_square]*num_train).T
+        # print(train_square.shape)
+        # print(num_test)
+        # print(np.array([train_square]*num_test).shape)
+        # print(test_square.shape)
+        # print(num_train)
+        # print(np.array([test_square]*num_train).T.shape)
+
+        matrix_multiplication = X.dot(self.X_train.T)
+       
+        # print(matrix_multiplication.shape)
         # (a-b)^2 = a^2+b^2-2ab
-        dists = -2*np.dot(X, self.X_train.T) + np.sum(np.square(self.X_train), axis=1) + np.sum(np.square(X), axis=1)[:, np.newaxis]
+        dists = np.sqrt(train_square_modified + test_square_modified - 2 * matrix_multiplication)
+
+        # a faster version which saves time to create those modified array using np.newaxis
+        # dists = np.sqrt(-2 * np.dot(X, self.X_train.T) + np.sum(self.X_train**2,    axis=1) + np.sum(X**2, axis=1)[:, np.newaxis])
+        
         #########################################################################
         # TODO:                                                                 #
         # Compute the l2 distance between all test points and all training      #
